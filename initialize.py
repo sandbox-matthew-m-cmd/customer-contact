@@ -148,6 +148,21 @@ def initialize_agent_executor():
             name = ct.SEARCH_WEB_INFO_TOOL_NAME,
             func=search.run,
             description=ct.SEARCH_WEB_INFO_TOOL_DESCRIPTION
+# 2026/01/05 m.sonoki mod start
+#         )
+        ),
+        # 全データベース検索用のTool
+        Tool(
+            name=ct.SEARCH_ALL_INFO_TOOL_NAME,
+            func=utils.run_rag_chain,
+            description=ct.SEARCH_ALL_INFO_TOOL_DESCRIPTION
+        ),
+        # 現在の日時を取得するTool
+        Tool(
+            name=ct.CURRENT_DATE_TOOL_NAME,
+            func=utils.get_current_datetime,
+            description=ct.CURRENT_DATE_TOOL_DESCRIPTION
+# 2026/01/05 m.sonoki mod end
         )
     ]
 

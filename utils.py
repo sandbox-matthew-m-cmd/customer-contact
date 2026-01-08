@@ -208,6 +208,39 @@ def run_customer_doc_chain(param):
     return ai_msg["answer"]
 
 
+def run_rag_chain(param):
+    """
+    全データベースを参照するTool設定用の関数
+
+    Args:
+        param: ユーザー入力値
+    
+    Returns:
+        LLMからの回答
+    """
+    # 全データベースを参照するChainを実行してLLMからの回答取得
+    ai_msg = st.session_state.rag_chain.invoke({"input": param, "chat_history": st.session_state.chat_history})
+
+    # 会話履歴への追加
+    st.session_state.chat_history.extend([HumanMessage(content=param), AIMessage(content=ai_msg["answer"])])
+
+    return ai_msg["answer"]
+
+
+def get_current_datetime(param=""):
+    """
+    現在の日時を取得するTool設定用の関数
+
+    Args:
+        param: 未使用（Tool関数の統一性のため）
+    
+    Returns:
+        現在の日時（文字列）
+    """
+    now = datetime.datetime.now()
+    return now.strftime("%Y年%m月%d日 %H時%M分%S秒")
+
+
 def delete_old_conversation_log(result):
     """
     古い会話履歴の削除
@@ -244,7 +277,7 @@ def execute_agent_or_chain(chat_message):
 
     # AIエージェント機能を利用する場合
     if st.session_state.agent_mode == ct.AI_AGENT_MODE_ON:
-        # LLMによる回答をストリーミング出力するためのオブジェクトを用意
+        # LLMによる回答をストリーミング出力するためのオブジェクトを用意f
         st_callback = StreamlitCallbackHandler(st.container())
         # Agent Executorの実行（AIエージェント機能を使う場合は、Toolとして設定した関数内で会話履歴への追加処理を実施）
         result = st.session_state.agent_executor.invoke({"input": chat_message}, {"callbacks": [st_callback]})
